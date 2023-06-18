@@ -29,8 +29,8 @@
  *
  * @return top
  */
-int spasm_dfs(int j, const spasm * A, int top, int *xj, int *pstack, int *marks, const int *qinv) {
-	int px, p2, inew, head, *Ap, *Aj;
+int64_t spasm_dfs(int64_t j, const spasm * A, int64_t top, int64_t *xj, int64_t *pstack, int64_t *marks, const int64_t *qinv) {
+	int64_t px, p2, inew, head, *Ap, *Aj;
 
 	/* check inputs */
 	assert(A != NULL);
@@ -120,8 +120,8 @@ int spasm_dfs(int j, const spasm * A, int top, int *xj, int *pstack, int *marks,
  * 
  * xj [l...3l-1] used as workspace
  */
-int spasm_reach(const spasm * A, const spasm * B, int k, int l, int *xj, const int *qinv) {
-	int  top, *Bp, *Bj, *pstack, *marks;
+int64_t spasm_reach(const spasm * A, const spasm * B, int64_t k, int64_t l, int64_t *xj, const int64_t *qinv) {
+	int64_t  top, *Bp, *Bj, *pstack, *marks;
 
 	/* check inputs */
 	assert(A != NULL);
@@ -140,7 +140,7 @@ int spasm_reach(const spasm * A, const spasm * B, int k, int l, int *xj, const i
 	 * not, start a DFS from j and add to the pattern all columns
 	 * reachable from j.
 	 */
-	for (int px = Bp[k]; px < Bp[k + 1]; px++)
+	for (int64_t px = Bp[k]; px < Bp[k + 1]; px++)
 		if (!marks[Bj[px]])
 			top = spasm_dfs(Bj[px], A, top, xj, pstack, marks, qinv);
 
@@ -149,7 +149,7 @@ int spasm_reach(const spasm * A, const spasm * B, int k, int l, int *xj, const i
 	 * TODO : possible optimization : if stuff is marked "k", and
 	 * initialized with -1, then this is not necessary
 	 */
-	for (int px = top; px < l; px++)
+	for (int64_t px = top; px < l; px++)
 		marks[xj[px]] = 0;
 
 	return top;

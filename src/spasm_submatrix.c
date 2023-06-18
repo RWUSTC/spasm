@@ -4,10 +4,10 @@
 /**
  * returns A[r_0:r_1, c_0:c_1]
  */
-spasm *spasm_submatrix(const spasm * A, int r_0, int r_1, int c_0, int c_1, int with_values) {
+spasm *spasm_submatrix(const spasm * A, int64_t r_0, int64_t r_1, int64_t c_0, int64_t c_1, int64_t with_values) {
 	spasm *B;
-	int Bn, Bm, Bnz, i, j, px, k;
-	int *Ap, *Aj, *Ax, *Bp, *Bj, *Bx;
+	int64_t Bn, Bm, Bnz, i, j, px, k;
+	int64_t *Ap, *Aj, *Ax, *Bp, *Bj, *Bx;
 
 	assert(A != NULL);
 	Ap = A->p;
@@ -49,10 +49,10 @@ spasm *spasm_submatrix(const spasm * A, int r_0, int r_1, int c_0, int c_1, int 
  * Given a matrix A, two intergers i0, i1. return the submatrix A[i0 : i1 ,
  * ].
  */
-spasm *spasm_rows_submatrix(const spasm * A, int i0, int i1, int with_values) {
+spasm *spasm_rows_submatrix(const spasm * A, int64_t i0, int64_t i1, int64_t with_values) {
 	spasm *B;
-	int Bn, Bm, Bnz, i, j, px, k;
-	int *Ap, *Aj, *Ax, *Bp, *Bj, *Bx;
+	int64_t Bn, Bm, Bnz, i, j, px, k;
+	int64_t *Ap, *Aj, *Ax, *Bp, *Bj, *Bx;
 
 	assert(A != NULL);
 	Ap = A->p;

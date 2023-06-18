@@ -7,31 +7,31 @@
  * If the transpose of A is not given (=NULL), it will be computed.
  */
 spasm_dm * spasm_connected_components(const spasm * A, spasm * given_At) {
-	int n = A->n;
-	int m = A->m;
+	int64_t n = A->n;
+	int64_t m = A->m;
 	spasm * A_t = (given_At != NULL) ? given_At : spasm_transpose(A, SPASM_IGNORE_VALUES);
-	int * Ap = A->p;
-	int * Aj = A->j;
-	int * A_tp = A_t->p;
-	int * A_tj = A_t->j;
+	int64_t * Ap = A->p;
+	int64_t * Aj = A->j;
+	int64_t * A_tp = A_t->p;
+	int64_t * A_tj = A_t->j;
 
-	int * rmark = spasm_malloc(n * sizeof(int));
-	int * cmark = spasm_malloc(m * sizeof(int));
+	int64_t * rmark = spasm_malloc(n * sizeof(int64_t));
+	int64_t * cmark = spasm_malloc(m * sizeof(int64_t));
 	spasm_vector_set(rmark, 0, n, -1);
 	spasm_vector_set(cmark, 0, m, -1);
 
 	spasm_dm * P = spasm_dm_alloc(n, m);
-	int *p = P->p;
-	int *q = P->q;
-	int *rr = P->r;
-	int *cc = P->c;
-	int rhead = 0;
-	int rtail = 0;
-	int chead = 0;
-	int ctail = 0;
-	int n_cc = 0;
+	int64_t *p = P->p;
+	int64_t *q = P->q;
+	int64_t *rr = P->r;
+	int64_t *cc = P->c;
+	int64_t rhead = 0;
+	int64_t rtail = 0;
+	int64_t chead = 0;
+	int64_t ctail = 0;
+	int64_t n_cc = 0;
 
-	for (int root = 0; root < n; root++) {
+	for (int64_t root = 0; root < n; root++) {
 		if (rmark[root] != -1)
 			continue;
 	
@@ -48,10 +48,10 @@ spasm_dm * spasm_connected_components(const spasm * A, spasm * given_At) {
 
 		/* while row queue is not empty */
 		while (rhead < rtail) {
-			int i = p[rhead++];
+			int64_t i = p[rhead++];
 
-			for (int px = Ap[i]; px < Ap[i + 1]; px++) {
-				int j = Aj[px];
+			for (int64_t px = Ap[i]; px < Ap[i + 1]; px++) {
+				int64_t j = Aj[px];
 				if (cmark[j] != -1)
 					continue;
 				cmark[j] = n_cc;
@@ -60,10 +60,10 @@ spasm_dm * spasm_connected_components(const spasm * A, spasm * given_At) {
 
 			/* while col queue is not empty */
 			while (chead < ctail) {
-				int j = q[chead++];
+				int64_t j = q[chead++];
 
-				for (int px = A_tp[j]; px < A_tp[j + 1]; px++) {
-					int i = A_tj[px];
+				for (int64_t px = A_tp[j]; px < A_tp[j + 1]; px++) {
+					int64_t i = A_tj[px];
 					if (rmark[i] != -1)
 						continue;
 					rmark[i] = n_cc;
@@ -76,11 +76,11 @@ spasm_dm * spasm_connected_components(const spasm * A, spasm * given_At) {
 	}
 
 	/* add empty / columns */
-	for (int i = 0; i < n; i++)
+	for (int64_t i = 0; i < n; i++)
 		if (rmark[i] == -1)
 			p[rtail++] = i;
 
-	for (int j = 0; j < m; j++)
+	for (int64_t j = 0; j < m; j++)
 		if (cmark[j] == -1)
 			q[ctail++] = j;
 

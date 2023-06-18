@@ -17,15 +17,15 @@
  * breadth-first search for coarse decomposition. This determines R0,R3,C3
  * (or C0,C1,R1 when given the transpose of A).
  */
-static void bfs(const spasm * A, int *wi, int *wj, int *queue, const int *imatch, const int *jmatch, int mark) {
-	int *Ap = A->p;
-	int *Aj = A->j;
-	int n = A->n;
-	int head = 0;
-	int tail = 0;
+static void bfs(const spasm * A, int64_t *wi, int64_t *wj, int64_t *queue, const int64_t *imatch, const int64_t *jmatch, int64_t mark) {
+	int64_t *Ap = A->p;
+	int64_t *Aj = A->j;
+	int64_t n = A->n;
+	int64_t head = 0;
+	int64_t tail = 0;
 
 	/* enqueue all unmatched nodes, set mark 0 to put them in R0/C0 */
-	for (int i = 0; i < n; i++) {
+	for (int64_t i = 0; i < n; i++) {
 		if (jmatch[i] >= 0)
 			continue;
 		wi[i] = 0;
@@ -33,18 +33,18 @@ static void bfs(const spasm * A, int *wi, int *wj, int *queue, const int *imatch
 	}
 
 	while (head < tail) {
-		int i = queue[head++];
+		int64_t i = queue[head++];
 
 		/* mark adjacent nodes. This puts column in C3 (or rows in R1
 		 * when transposed). If matched, mark and enqueue matched node.
 		 * This puts rows in R3 (or columns in C1 when transposed). 
 		 */
-		for (int px = Ap[i]; px < Ap[i + 1]; px++) {
-			int j = Aj[px];
+		for (int64_t px = Ap[i]; px < Ap[i + 1]; px++) {
+			int64_t j = Aj[px];
 			if (wj[j] >= 0)
 				continue;
 			wj[j] = mark;
-			int I = imatch[j];
+			int64_t I = imatch[j];
 			if (wi[I] >= 0)
 				continue;
 			wi[I] = mark;
@@ -55,9 +55,9 @@ static void bfs(const spasm * A, int *wi, int *wj, int *queue, const int *imatch
 
 
 /* collect unmatched rows into the permutation vector p */
-static void collect_unmatched(int n, const int *wi, int *p, int *rr, int set) {
-	int kr = rr[set];
-	for (int i = 0; i < n; i++)
+static void collect_unmatched(int64_t n, const int64_t *wi, int64_t *p, int64_t *rr, int64_t set) {
+	int64_t kr = rr[set];
+	for (int64_t i = 0; i < n; i++)
 		if (wi[i] == 0)
 			p[kr++] = i;
 	rr[set + 1] = kr;
@@ -66,10 +66,10 @@ static void collect_unmatched(int n, const int *wi, int *p, int *rr, int set) {
 
 
 /* collect matched rows and columns into p and q */
-static void collect_matched(int n, const int *wj, const int *imatch, int *p, int *q, int *cc, int *rr, int set, int mark) {
-	int kc = cc[set];
-	int kr = rr[set - 1];
-	for (int j = 0; j < n; j++) {
+static void collect_matched(int64_t n, const int64_t *wj, const int64_t *imatch, int64_t *p, int64_t *q, int64_t *cc, int64_t *rr, int64_t set, int64_t mark) {
+	int64_t kc = cc[set];
+	int64_t kr = rr[set - 1];
+	for (int64_t j = 0; j < n; j++) {
 		if (wj[j] != mark)
 			continue;	/* skip if j is not in C set */
 		p[kr++] = imatch[j];
@@ -81,12 +81,12 @@ static void collect_matched(int n, const int *wj, const int *imatch, int *p, int
 
 
 spasm_dm *spasm_dulmage_mendelsohn(const spasm * A) {
-	int n = A->n;
-	int m = A->m;
+	int64_t n = A->n;
+	int64_t m = A->m;
 
 	/* --- Maximum matching ----------------------------------------- */
-	int *jmatch = spasm_malloc(n * sizeof(int));
-	int *imatch = spasm_malloc(m * sizeof(int));
+	int64_t *jmatch = spasm_malloc(n * sizeof(int64_t));
+	int64_t *imatch = spasm_malloc(m * sizeof(int64_t));
 
 	spasm * A_t = spasm_transpose(A, SPASM_IGNORE_VALUES);
 
@@ -98,16 +98,16 @@ spasm_dm *spasm_dulmage_mendelsohn(const spasm * A) {
 	
 	/* --- coarse DM decomposition ---------------------------------- */
 	spasm_dm *DM = spasm_dm_alloc(n, m);
-	int *p = DM->p;
-	int *q = DM->q;
-	int *r = DM->r;
-	int *c = DM->c;
-	int *rr = DM->rr;
-	int *cc = DM->cc;
+	int64_t *p = DM->p;
+	int64_t *q = DM->q;
+	int64_t *r = DM->r;
+	int64_t *c = DM->c;
+	int64_t *rr = DM->rr;
+	int64_t *cc = DM->cc;
 
 	/* we use p,q,r and c as workspace for the bfs. */
-	int * wi = r;
-	int * wj = c;
+	int64_t * wi = r;
+	int64_t * wj = c;
 
 	/* unmark everything for bfs */
 	spasm_vector_set(wj, 0, m, -1);
@@ -135,15 +135,15 @@ spasm_dm *spasm_dulmage_mendelsohn(const spasm * A) {
 		return DM;  /* S is empty: no need to find its SCC */
 
 	/* extract S */
-	int *qinv = spasm_pinv(q, m);
+	int64_t *qinv = spasm_pinv(q, m);
 	spasm *B = spasm_permute(A, p, qinv, SPASM_IGNORE_VALUES);
 	spasm *C = spasm_submatrix(B, rr[1], rr[2], cc[2], cc[3], SPASM_IGNORE_VALUES);
 	spasm_csr_free(B);
 
 	spasm_dm *SCC = spasm_strongly_connected_components(C);
-	int n_scc = SCC->nb;
-	int *scc_r = SCC->r;
-	int *scc_c = SCC->c;
+	int64_t n_scc = SCC->nb;
+	int64_t *scc_r = SCC->r;
+	int64_t *scc_c = SCC->c;
 	
 	/* update permutations */
 	spasm_range_pvec(p, rr[1], rr[2], SCC->p);
@@ -151,12 +151,12 @@ spasm_dm *spasm_dulmage_mendelsohn(const spasm * A) {
 	
 	/* update fine decomp */
 	r[0] = 0;
-	for(int i = 0; i <= n_scc; i++)
+	for(int64_t i = 0; i <= n_scc; i++)
 		r[i + 1] = rr[1] + scc_r[i];
 	r[n_scc + 2] = n;
 
 	c[0] = 0;
-	for(int i = 0; i <= n_scc; i++)
+	for(int64_t i = 0; i <= n_scc; i++)
 		c[i + 1] = cc[2] + scc_c[i];
 	c[n_scc + 2] = m;
 	DM->nb = n_scc + 2;

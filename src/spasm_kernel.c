@@ -9,11 +9,11 @@
  * A_t : the TRANSPOSE of A. column_permutation : an optional (may be NULL)
  * sparsity-preserving permutation of the columns
  */
-spasm *spasm_kernel(const spasm * A_t, const int *column_permutation) {
+spasm *spasm_kernel(const spasm * A_t, const int64_t *column_permutation) {
 	spasm_lu *PLUQ;
 	spasm *L, *K;
-	int i, j, p, m, r, top, prime, nz;
-	int *xi, *Kp, *Kj, *Kx, *q;
+	int64_t i, j, p, m, r, top, prime, nz;
+	int64_t *xi, *Kp, *Kj, *Kx, *q;
 	spasm_GFp *x;
 
 	PLUQ = spasm_PLUQ(A_t, column_permutation, SPASM_DISCARD_L);
@@ -27,7 +27,7 @@ spasm *spasm_kernel(const spasm * A_t, const int *column_permutation) {
 
 	/* allocate result and workspace */
 	K = spasm_csr_alloc(m - r, m, L->nzmax, prime, SPASM_WITH_NUMERICAL_VALUES);
-	xi = malloc(3 * m * sizeof(int));
+	xi = malloc(3 * m * sizeof(int64_t));
 	spasm_vector_zero(xi, 3 * m);
 	x = malloc(m * sizeof(spasm_GFp));
 

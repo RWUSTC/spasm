@@ -21,27 +21,27 @@
 
 /* --- primary SpaSM routines and data structures --- */
 
-typedef int spasm_GFp;
+typedef int64_t spasm_GFp;
 
 typedef struct {                /* matrix in compressed-sparse row format */
-	int nzmax;                    /* maximum number of entries */
-	int n;                        /* number of rows */
-	int m;                        /* number of columns */
-	int *p;                       /* row pointers (size n+1) */
-	int *j;                       /* column indices, size nzmax */
+	int64_t nzmax;                    /* maximum number of entries */
+	int64_t n;                        /* number of rows */
+	int64_t m;                        /* number of columns */
+	int64_t *p;                       /* row pointers (size n+1) */
+	int64_t *j;                       /* column indices, size nzmax */
 	spasm_GFp *x;                 /* numerical values, size nzmax (optional) */
-	int prime;
+	int64_t prime;
 }      spasm;
 
 typedef struct {                /* matrix in triplet form */
-	int nzmax;                    /* maximum number of entries */
-	int nz;                       /* # entries */
-	int n;                        /* number of rows */
-	int m;                        /* number of columns */
-	int *i;                       /* row indices, size nzmax */
-	int *j;                       /* column indices (size nzmax) */
+	int64_t nzmax;                    /* maximum number of entries */
+	int64_t nz;                       /* # entries */
+	int64_t n;                        /* number of rows */
+	int64_t m;                        /* number of columns */
+	int64_t *i;                       /* row indices, size nzmax */
+	int64_t *j;                       /* column indices (size nzmax) */
 	spasm_GFp *x;                 /* numerical values, size nzmax (optional) */
-	int prime;
+	int64_t prime;
 }      spasm_triplet;
 
 
@@ -73,27 +73,27 @@ The numerical values are optional (useful for storing a sparse graph, or the pat
 typedef struct {                /* a PLUQ factorisation */
 	spasm *L;
 	spasm *U;
-	int *qinv;                    /* the inverse Q is stored */
-	int *p;
+	int64_t *qinv;                    /* the inverse Q is stored */
+	int64_t *p;
 }      spasm_lu;
 
 typedef struct {                /* a dense LU factorization */
-	int n;                        /* number of rows */
-	int m;                        /* number of columns */
-	int prime; 
-	int *p;                       /* positions of pivots in allocated rows */
+	int64_t n;                        /* number of rows */
+	int64_t m;                        /* number of columns */
+	int64_t prime; 
+	int64_t *p;                       /* positions of pivots in allocated rows */
 	spasm_GFp **x;                /* pointers to the rows */
 }      spasm_dense_lu;
 
 
 typedef struct {      /**** a Dulmage-Mendelson decomposition */
-				int *p;       /* size n, row permutation */
-				int *q;       /* size m, column permutation */
-				int *r;       /* size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q) */
-				int *c;       /* size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q) */
-				int nb;       /* # of blocks in fine decomposition */
-				int rr[5];    /* coarse row decomposition */
-				int cc[5];    /* coarse column decomposition */
+				int64_t *p;       /* size n, row permutation */
+				int64_t *q;       /* size m, column permutation */
+				int64_t *r;       /* size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q) */
+				int64_t *c;       /* size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q) */
+				int64_t nb;       /* # of blocks in fine decomposition */
+				int64_t rr[5];    /* coarse row decomposition */
+				int64_t cc[5];    /* coarse column decomposition */
 }      spasm_dm;
 
 
@@ -109,117 +109,117 @@ typedef struct {      /**** a Dulmage-Mendelson decomposition */
 
 /* spasm_util.c */
 double spasm_wtime();
-int spasm_nnz(const spasm * A);
+int64_t spasm_nnz(const spasm * A);
 void *spasm_malloc(size_t size);
 void *spasm_calloc(size_t count, size_t size);
 void *spasm_realloc(void *ptr, size_t size);
 
-spasm *spasm_csr_alloc(int n, int m, int nzmax, int prime, int with_values);
-void spasm_csr_realloc(spasm * A, int nzmax);
-void spasm_csr_resize(spasm * A, int n, int m);
+spasm *spasm_csr_alloc(int64_t n, int64_t m, int64_t nzmax, int64_t prime, int64_t with_values);
+void spasm_csr_realloc(spasm * A, int64_t nzmax);
+void spasm_csr_resize(spasm * A, int64_t n, int64_t m);
 void spasm_csr_free(spasm * A);
 
-spasm_triplet *spasm_triplet_alloc(int m, int n, int nzmax, int prime, int with_values);
-void spasm_triplet_realloc(spasm_triplet * A, int nzmax);
+spasm_triplet *spasm_triplet_alloc(int64_t m, int64_t n, int64_t nzmax, int64_t prime, int64_t with_values);
+void spasm_triplet_realloc(spasm_triplet * A, int64_t nzmax);
 void spasm_triplet_free(spasm_triplet * A);
 
-spasm_dm *spasm_dm_alloc(int n, int m);
+spasm_dm *spasm_dm_alloc(int64_t n, int64_t m);
 void spasm_dm_free(spasm_dm * P);
 
-void spasm_vector_zero(spasm_GFp * x, int n);
-void spasm_vector_set(spasm_GFp * x, int a, int b, spasm_GFp alpha);
+void spasm_vector_zero(spasm_GFp * x, int64_t n);
+void spasm_vector_set(spasm_GFp * x, int64_t a, int64_t b, spasm_GFp alpha);
 
-spasm *spasm_identity(int n, int prime);
+spasm *spasm_identity(int64_t n, int64_t prime);
 void spasm_human_format(int64_t n, char *target);
-int spasm_get_num_threads();
-int spasm_get_thread_num();
+int64_t spasm_get_num_threads();
+int64_t spasm_get_thread_num();
 
 /* spasm_triplet.c */
-void spasm_add_entry(spasm_triplet * T, int i, int j, spasm_GFp x);
+void spasm_add_entry(spasm_triplet * T, int64_t i, int64_t j, spasm_GFp x);
 void spasm_triplet_transpose(spasm_triplet * T);
 spasm *spasm_compress(const spasm_triplet * T);
 
 /* spasm_io.c */
-spasm_triplet *spasm_load_sms(FILE * f, int prime);
-spasm_triplet *spasm_load_mm(FILE * f, int prime);
-spasm *spasm_load_bin(FILE * f, int prime);
+spasm_triplet *spasm_load_sms(FILE * f, int64_t prime);
+spasm_triplet *spasm_load_mm(FILE * f, int64_t prime);
+spasm *spasm_load_bin(FILE * f, int64_t prime);
 void spasm_save_triplet(FILE * f, const spasm_triplet * A);
 void spasm_save_csr(FILE * f, const spasm * A);
-void spasm_save_pnm(const spasm * A, FILE * f, int x, int y, int mode, spasm_dm *DM);
-spasm *spasm_load_gbla_old(FILE * f, int with_values);
+void spasm_save_pnm(const spasm * A, FILE * f, int64_t x, int64_t y, int64_t mode, spasm_dm *DM);
+spasm *spasm_load_gbla_old(FILE * f, int64_t with_values);
 spasm *spasm_load_gbla_new(FILE * f);
 
 /* spasm_transpose.c */
-spasm *spasm_transpose(const spasm * C, int keep_values);
+spasm *spasm_transpose(const spasm * C, int64_t keep_values);
 
 /* spasm_submatrix.c */
-spasm *spasm_submatrix(const spasm * A, int r_0, int r_1, int c_0, int c_1, int with_values);
-spasm *sorted_spasm_submatrix(const spasm * A, int r0, int r1, int c0, int c1, int *py, int with_values);
-spasm *spasm_rows_submatrix(const spasm * A, int i0, int i1, int with_values);
+spasm *spasm_submatrix(const spasm * A, int64_t r_0, int64_t r_1, int64_t c_0, int64_t c_1, int64_t with_values);
+spasm *sorted_spasm_submatrix(const spasm * A, int64_t r0, int64_t r1, int64_t c0, int64_t c1, int64_t *py, int64_t with_values);
+spasm *spasm_rows_submatrix(const spasm * A, int64_t i0, int64_t i1, int64_t with_values);
 
 /* spasm_permutation.c */
-void spasm_pvec(const int *p, const spasm_GFp * b, spasm_GFp * x, int n);
-void spasm_ipvec(const int *p, const spasm_GFp * b, spasm_GFp * x, int n);
-int *spasm_pinv(int const *p, int n);
-spasm *spasm_permute(const spasm * A, const int *p, const int *qinv, int with_values);
-int *spasm_random_permutation(int n);
-void spasm_range_pvec(int *x, int a, int b, int *p);
+void spasm_pvec(const int64_t *p, const spasm_GFp * b, spasm_GFp * x, int64_t n);
+void spasm_ipvec(const int64_t *p, const spasm_GFp * b, spasm_GFp * x, int64_t n);
+int64_t *spasm_pinv(int64_t const *p, int64_t n);
+spasm *spasm_permute(const spasm * A, const int64_t *p, const int64_t *qinv, int64_t with_values);
+int64_t *spasm_random_permutation(int64_t n);
+void spasm_range_pvec(int64_t *x, int64_t a, int64_t b, int64_t *p);
 
 /* spasm_GFp.c */
-spasm_GFp spasm_GFp_inverse(spasm_GFp a, int prime);
+spasm_GFp spasm_GFp_inverse(spasm_GFp a, int64_t prime);
 
 /* spasm_scatter.c */
-void spasm_scatter(const int *Aj, const spasm_GFp * Ax, int from, int to, spasm_GFp beta, spasm_GFp * x, int prime);
+void spasm_scatter(const int64_t *Aj, const spasm_GFp * Ax, int64_t from, int64_t to, spasm_GFp beta, spasm_GFp * x, int64_t prime);
 
 /* spasm_reach.c */
-int spasm_dfs(int i, const spasm * G, int top, int *xi, int *pstack, int *marks, const int *pinv);
-int spasm_reach(const spasm * G, const spasm * B, int k, int l, int *xi, const int *pinv);
+int64_t spasm_dfs(int64_t i, const spasm * G, int64_t top, int64_t *xi, int64_t *pstack, int64_t *marks, const int64_t *pinv);
+int64_t spasm_reach(const spasm * G, const spasm * B, int64_t k, int64_t l, int64_t *xi, const int64_t *pinv);
 
 /* spasm_gaxpy.c */
 void spasm_gaxpy(const spasm * A, const spasm_GFp * x, spasm_GFp * y);
-int spasm_sparse_vector_matrix_prod(const spasm * M, const spasm_GFp * x, const int *xi, int xnz, spasm_GFp * y, int *yi);
+int64_t spasm_sparse_vector_matrix_prod(const spasm * M, const spasm_GFp * x, const int64_t *xi, int64_t xnz, spasm_GFp * y, int64_t *yi);
 
 /* spasm_triangular.c */
-int spasm_is_upper_triangular(const spasm * A);
-int spasm_is_lower_triangular(const spasm * A);
-void spasm_dense_back_solve(const spasm * L, spasm_GFp * b, spasm_GFp * x, const int *p);
-int spasm_dense_forward_solve(const spasm * U, spasm_GFp * b, spasm_GFp * x, const int *q);
-int spasm_sparse_backward_solve(const spasm * L, const spasm * B, int k, int *xi, spasm_GFp * x, const int *pinv, int r_bound);
-int spasm_sparse_forward_solve(const spasm * U, const spasm * B, int k, int *xi, spasm_GFp * x, const int *pinv);
+int64_t spasm_is_upper_triangular(const spasm * A);
+int64_t spasm_is_lower_triangular(const spasm * A);
+void spasm_dense_back_solve(const spasm * L, spasm_GFp * b, spasm_GFp * x, const int64_t *p);
+int64_t spasm_dense_forward_solve(const spasm * U, spasm_GFp * b, spasm_GFp * x, const int64_t *q);
+int64_t spasm_sparse_backward_solve(const spasm * L, const spasm * B, int64_t k, int64_t *xi, spasm_GFp * x, const int64_t *pinv, int64_t r_bound);
+int64_t spasm_sparse_forward_solve(const spasm * U, const spasm * B, int64_t k, int64_t *xi, spasm_GFp * x, const int64_t *pinv);
 
 /* spasm_lu.c */
-spasm_lu *spasm_PLUQ(const spasm * A, const int *row_permutation, int keep_L);
-spasm_lu *spasm_LU(const spasm * A, const int *row_permutation, int keep_L);
+spasm_lu *spasm_PLUQ(const spasm * A, const int64_t *row_permutation, int64_t keep_L);
+spasm_lu *spasm_LU(const spasm * A, const int64_t *row_permutation, int64_t keep_L);
 void spasm_free_LU(spasm_lu * X);
-int spasm_find_pivot(int *xi, spasm_GFp * x, int top, spasm * U, spasm * L, int *unz_ptr, int *lnz_ptr, int i, int *deff_ptr, int *qinv, int *p, int n);
-void spasm_eliminate_sparse_pivots(const spasm * A, const int npiv, const int *p, spasm_GFp *x);
+int64_t spasm_find_pivot(int64_t *xi, spasm_GFp * x, int64_t top, spasm * U, spasm * L, int64_t *unz_ptr, int64_t *lnz_ptr, int64_t i, int64_t *deff_ptr, int64_t *qinv, int64_t *p, int64_t n);
+void spasm_eliminate_sparse_pivots(const spasm * A, const int64_t npiv, const int64_t *p, spasm_GFp *x);
 
 /* spasm_schur.c */
-void spasm_make_pivots_unitary(spasm *A, const int *p, const int npiv);
-void spasm_stack_nonpivotal_columns(spasm *A, int *qinv);
-spasm *spasm_schur(spasm * A, int *p, int npiv, double est_density, int keep_L, int *p_out);
-int spasm_schur_rank(spasm * A, const int *p, const int *qinv, const int npiv);
-double spasm_schur_probe_density(spasm * A, const int *p, const int *qinv, const int npiv, const int R);
+void spasm_make_pivots_unitary(spasm *A, const int64_t *p, const int64_t npiv);
+void spasm_stack_nonpivotal_columns(spasm *A, int64_t *qinv);
+spasm *spasm_schur(spasm * A, int64_t *p, int64_t npiv, double est_density, int64_t keep_L, int64_t *p_out);
+int64_t spasm_schur_rank(spasm * A, const int64_t *p, const int64_t *qinv, const int64_t npiv);
+double spasm_schur_probe_density(spasm * A, const int64_t *p, const int64_t *qinv, const int64_t npiv, const int64_t R);
 
 /* spasm_dense_lu.c */
-spasm_dense_lu *spasm_dense_LU_alloc(int m, int prime);
+spasm_dense_lu *spasm_dense_LU_alloc(int64_t m, int64_t prime);
 void spasm_dense_LU_free(spasm_dense_lu * A);
-int spasm_dense_LU_process(spasm_dense_lu *A, spasm_GFp *y);
+int64_t spasm_dense_LU_process(spasm_dense_lu *A, spasm_GFp *y);
 
 /* spasm_solutions.c */
-int spasm_PLUQ_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x);
-int spasm_LU_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x);
+int64_t spasm_PLUQ_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x);
+int64_t spasm_LU_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x);
 
 /* spasm_pivots.c */
-int spasm_find_pivots(spasm * A, int *p, int *qinv);
-spasm * spasm_permute_pivots(const spasm *A, const int *p, int *qinv, int npiv);
+int64_t spasm_find_pivots(spasm * A, int64_t *p, int64_t *qinv);
+spasm * spasm_permute_pivots(const spasm *A, const int64_t *p, int64_t *qinv, int64_t npiv);
 
 /* spasm_matching.c */
-int spasm_maximum_matching(const spasm * A, int *jmatch, int *imatch);
-int *spasm_permute_row_matching(int n, const int *jmatch, const int *p, const int *qinv);
-int *spasm_permute_column_matching(int m, const int *imatch, const int *pinv, const int *q);
-int *spasm_submatching(const int *match, int a, int b, int c, int d);
-int spasm_structural_rank(const spasm * A);
+int64_t spasm_maximum_matching(const spasm * A, int64_t *jmatch, int64_t *imatch);
+int64_t *spasm_permute_row_matching(int64_t n, const int64_t *jmatch, const int64_t *p, const int64_t *qinv);
+int64_t *spasm_permute_column_matching(int64_t m, const int64_t *imatch, const int64_t *pinv, const int64_t *q);
+int64_t *spasm_submatching(const int64_t *match, int64_t a, int64_t b, int64_t c, int64_t d);
+int64_t spasm_structural_rank(const spasm * A);
 
 /* spasm_dm.c */
 spasm_dm *spasm_dulmage_mendelsohn(const spasm * A);
@@ -231,30 +231,30 @@ spasm_dm *spasm_strongly_connected_components(const spasm * A);
 spasm_dm *spasm_connected_components(const spasm * A, spasm * given_At);
 
 /* spasm_kernel.c */
-spasm *spasm_kernel(const spasm * A, const int *column_permutation);
+spasm *spasm_kernel(const spasm * A, const int64_t *column_permutation);
 
 /* spasm_uetree.c */
-int * spasm_uetree(const spasm * A);
-int *spasm_tree_postorder(const spasm *A, const int *parent);
-int *spasm_tree_topological_postorder(const spasm *A, const int *parent);
+int64_t * spasm_uetree(const spasm * A);
+int64_t *spasm_tree_postorder(const spasm *A, const int64_t *parent);
+int64_t *spasm_tree_topological_postorder(const spasm *A, const int64_t *parent);
 
 /* utilities */
-static inline int spasm_max(int a, int b) {
+static inline int64_t spasm_max(int64_t a, int64_t b) {
 	return (a > b) ? a : b;
 }
 
-static inline int spasm_min(int a, int b) {
+static inline int64_t spasm_min(int64_t a, int64_t b) {
 	return (a < b) ? a : b;
 }
 
-static inline void spasm_swap(int *a, int i, int j) {
-	int x = a[i];
+static inline void spasm_swap(int64_t *a, int64_t i, int64_t j) {
+	int64_t x = a[i];
 	a[i] = a[j];
 	a[j] = x;
 }
 
-static inline int spasm_row_weight(const spasm * A, int i) {
-	int *Ap = A->p;
+static inline int64_t spasm_row_weight(const spasm * A, int64_t i) {
+	int64_t *Ap = A->p;
 	return Ap[i + 1] - Ap[i];
 }
 #endif

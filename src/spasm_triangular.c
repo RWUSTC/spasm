@@ -8,8 +8,8 @@ uint64_t reach = 0, scatter = 0;
 #endif
 
 
-int spasm_is_upper_triangular(const spasm * A) {
-	int i, p, n, m, *Aj, *Ap;
+int64_t spasm_is_upper_triangular(const spasm * A) {
+	int64_t i, p, n, m, *Aj, *Ap;
 	spasm_GFp *Ax;
 
 	n = A->n;
@@ -39,8 +39,8 @@ int spasm_is_upper_triangular(const spasm * A) {
 }
 
 
-int spasm_is_lower_triangular(const spasm * A) {
-	int i, n, m, p, *Aj, *Ap;
+int64_t spasm_is_lower_triangular(const spasm * A) {
+	int64_t i, n, m, p, *Aj, *Ap;
 	spasm_GFp *Ax;
 
 	n = A->n;
@@ -90,8 +90,8 @@ int spasm_is_lower_triangular(const spasm * A) {
  * p[j] == i indicates if the "diagonal" entry on column j is on row i
  * 
  */
-void spasm_dense_back_solve(const spasm * L, spasm_GFp * b, spasm_GFp * x, const int *p) {
-	int i, j, n, m, *Lp, *Lj, prime;
+void spasm_dense_back_solve(const spasm * L, spasm_GFp * b, spasm_GFp * x, const int64_t *p) {
+	int64_t i, j, n, m, *Lp, *Lj, prime;
 	spasm_GFp *Lx;
 
 	/* check inputs */
@@ -141,8 +141,8 @@ void spasm_dense_back_solve(const spasm * L, spasm_GFp * b, spasm_GFp * x, const
  * 
  * returns SPASM_SUCCESS or SPASM_NO_SOLUTION
  */
-int spasm_dense_forward_solve(const spasm * U, spasm_GFp * b, spasm_GFp * x, const int *q) {
-	int i, j, n, m, *Up, *Uj, prime;
+int64_t spasm_dense_forward_solve(const spasm * U, spasm_GFp * b, spasm_GFp * x, const int64_t *q) {
+	int64_t i, j, n, m, *Up, *Uj, prime;
 	spasm_GFp *Ux;
 
 	/* check inputs */
@@ -202,8 +202,8 @@ int spasm_dense_forward_solve(const spasm * U, spasm_GFp * b, spasm_GFp * x, con
  *
  * top is the return value.
  */
-int spasm_sparse_forward_solve(const spasm * U, const spasm * B, int k, int *xj, spasm_GFp * x, const int *qinv) {
-	int top, m, prime, *Up, *Uj, *Bp, *Bj;
+int64_t spasm_sparse_forward_solve(const spasm * U, const spasm * B, int64_t k, int64_t *xj, spasm_GFp * x, const int64_t *qinv) {
+	int64_t top, m, prime, *Up, *Uj, *Bp, *Bj;
 	spasm_GFp *Ux, *Bx;
 
 #ifdef SPASM_TIMING
@@ -232,11 +232,11 @@ int spasm_sparse_forward_solve(const spasm * U, const spasm * B, int k, int *xj,
 #endif
 
 	/* clear x */
-	for (int px = top; px < m; px++)
+	for (int64_t px = top; px < m; px++)
 		x[xj[px]] = 0;
 
 	/* scatter B[k] into x */
-	for (int px = Bp[k]; px < Bp[k + 1]; px++)
+	for (int64_t px = Bp[k]; px < Bp[k + 1]; px++)
 		x[Bj[px]] = Bx[px];
 
 #ifdef SPASM_TIMING
@@ -244,12 +244,12 @@ int spasm_sparse_forward_solve(const spasm * U, const spasm * B, int k, int *xj,
 #endif
 
 	/* iterate over the (precomputed) pattern of x (= the solution) */
-	for (int px = top; px < m; px++) {
+	for (int64_t px = top; px < m; px++) {
 		/* x[j] is nonzero */
-		int j = xj[px];
+		int64_t j = xj[px];
 
 		/* locate corresponding pivot if there is any */
-		int i = (qinv != NULL) ? (qinv[j]) : j;
+		int64_t i = (qinv != NULL) ? (qinv[j]) : j;
 		if (i < 0)
 			continue;
 
@@ -282,8 +282,8 @@ int spasm_sparse_forward_solve(const spasm * U, const spasm * B, int k, int *xj,
  * top is the return value.
  *
  */
-int spasm_sparse_backward_solve(const spasm * L, const spasm * B, int k, int *xi, spasm_GFp * x, const int *pinv, int r_bound) {
-	int i, I, p, px, top, n, m, prime, *Lp, *Lj, *Bp, *Bj, tmp;
+int64_t spasm_sparse_backward_solve(const spasm * L, const spasm * B, int64_t k, int64_t *xi, spasm_GFp * x, const int64_t *pinv, int64_t r_bound) {
+	int64_t i, I, p, px, top, n, m, prime, *Lp, *Lj, *Bp, *Bj, tmp;
 	spasm_GFp *Lx, *Bx;
 
 #ifdef SPASM_TIMING

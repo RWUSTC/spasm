@@ -11,12 +11,12 @@
  * 
  * Uses a PLUQ factorization
  */
-int spasm_PLUQ_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x) {
+int64_t spasm_PLUQ_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x) {
 	spasm_GFp *u, *v, *w, *s;
 	spasm_lu *PLUQ;
 	spasm *L, *U;
-	int n, m, r, ok;
-	int *p, *qinv;
+	int64_t n, m, r, ok;
+	int64_t *p, *qinv;
 
 	/* check inputs */
 	assert(A != NULL);
@@ -24,8 +24,8 @@ int spasm_PLUQ_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x) {
 
 	n = A->n;
 	m = A->m;
-	p = spasm_malloc(n * sizeof(int));
-	qinv = spasm_malloc(m * sizeof(int));
+	p = spasm_malloc(n * sizeof(int64_t));
+	qinv = spasm_malloc(m * sizeof(int64_t));
 
 	spasm_find_pivots(A, p, qinv);
 	PLUQ = spasm_PLUQ(A, p, SPASM_KEEP_L);
@@ -70,12 +70,12 @@ int spasm_PLUQ_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x) {
  * 
  * returns SPASM_SUCCESS or SPASM_NO_SOLUTION
  */
-int spasm_LU_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x) {
+int64_t spasm_LU_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x) {
 	spasm_GFp *y, *z, *w;
 	spasm_lu *LU;
 	spasm *L, *U;
-	int n, m, r, i, ok;
-	int *q, *p, *qinv;
+	int64_t n, m, r, i, ok;
+	int64_t *q, *p, *qinv;
 
 	/* check inputs */
 	assert(A != NULL);
@@ -83,8 +83,8 @@ int spasm_LU_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x) {
 	n = A->n;
 	m = A->m;
 
-	qinv = spasm_malloc(m * sizeof(int));
-	p = spasm_malloc(n * sizeof(int));
+	qinv = spasm_malloc(m * sizeof(int64_t));
+	p = spasm_malloc(n * sizeof(int64_t));
 	spasm_find_pivots(A, p, qinv);
 	LU = spasm_LU(A, p, SPASM_KEEP_L);
 	L = LU->L;
@@ -96,7 +96,7 @@ int spasm_LU_solve(spasm * A, const spasm_GFp * b, spasm_GFp * x) {
 	y = spasm_malloc(m * sizeof(spasm_GFp));
 	z = spasm_malloc(r * sizeof(spasm_GFp));
 	w = spasm_malloc(n * sizeof(spasm_GFp));
-	q = spasm_malloc(m * sizeof(int));
+	q = spasm_malloc(m * sizeof(int64_t));
 
 	for (i = 0; i < m; i++) {
 		if (LU->qinv[i] != -1) {

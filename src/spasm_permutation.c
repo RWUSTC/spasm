@@ -15,8 +15,8 @@
  * 
  * This means that x[k] <--- b[ p[k] ]
  */
-void spasm_pvec(const int *p, const spasm_GFp * b, spasm_GFp * x, int n) {
-	int k;
+void spasm_pvec(const int64_t *p, const spasm_GFp * b, spasm_GFp * x, int64_t n) {
+	int64_t k;
 	assert(x != NULL);
 	assert(b != NULL);
 
@@ -33,8 +33,8 @@ void spasm_pvec(const int *p, const spasm_GFp * b, spasm_GFp * x, int n) {
  * 
  * The function is given p, not p^{-1}.
  */
-void spasm_ipvec(const int *p, const spasm_GFp * b, spasm_GFp * x, int n) {
-	int k;
+void spasm_ipvec(const int64_t *p, const spasm_GFp * b, spasm_GFp * x, int64_t n) {
+	int64_t k;
 	assert(x != NULL);
 	assert(b != NULL);
 
@@ -44,14 +44,14 @@ void spasm_ipvec(const int *p, const spasm_GFp * b, spasm_GFp * x, int n) {
 }
 
 /* compute the inverse permutation */
-int *spasm_pinv(int const *p, int n) {
-	int k, *pinv;
+int64_t *spasm_pinv(int64_t const *p, int64_t n) {
+	int64_t k, *pinv;
 	/* p = NULL denotes identity */
 	if (p == NULL) {
 		return NULL;
 	}
 	/* allocate result */
-	pinv = spasm_malloc(n * sizeof(int));
+	pinv = spasm_malloc(n * sizeof(int64_t));
 	/* invert the permutation */
 	for (k = 0; k < n; k++) {
 		pinv[p[k]] = k;
@@ -65,8 +65,8 @@ int *spasm_pinv(int const *p, int n) {
  * respectively.
  * 
  */
-spasm *spasm_permute(const spasm * A, const int *p, const int *qinv, int values) {
-	int t, j, i, nz, m, n, *Ap, *Aj, *Cp, *Cj;
+spasm *spasm_permute(const spasm * A, const int64_t *p, const int64_t *qinv, int64_t values) {
+	int64_t t, j, i, nz, m, n, *Ap, *Aj, *Cp, *Cj;
 	spasm_GFp *Cx, *Ax;
 	spasm *C;
 
@@ -104,10 +104,10 @@ spasm *spasm_permute(const spasm * A, const int *p, const int *qinv, int values)
 	return C;
 }
 
-int *spasm_random_permutation(int n) {
-	int i, *p;
+int64_t *spasm_random_permutation(int64_t n) {
+	int64_t i, *p;
 
-	p = spasm_malloc(n * sizeof(int));
+	p = spasm_malloc(n * sizeof(int64_t));
 	for (i = 0; i < n; i++) {
 		p[i] = i;
 	}
@@ -119,8 +119,8 @@ int *spasm_random_permutation(int n) {
 }
 
 /* in-place permute x[a:b] using p. Destroys p */
-void spasm_range_pvec(int *x, int a, int b, int *p) {
-	int i;
+void spasm_range_pvec(int64_t *x, int64_t a, int64_t b, int64_t *p) {
+	int64_t i;
 
 	for (i = 0; i < b - a; i++) {
 		p[i] = x[a + p[i]];

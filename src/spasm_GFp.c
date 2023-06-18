@@ -2,9 +2,9 @@
 #include <assert.h>
 #include "spasm.h"
 
-spasm_GFp spasm_GFp_inverse(spasm_GFp a, int prime) {
-	int b0 = prime, t, q;
-	int x0 = 0, x1 = 1;
+spasm_GFp spasm_GFp_inverse(spasm_GFp a, int64_t prime) {
+	int64_t b0 = prime, t, q;
+	int64_t x0 = 0, x1 = 1;
 
 	assert(prime > 1);
 	while (a > 1) {

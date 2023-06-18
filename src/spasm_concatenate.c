@@ -6,10 +6,10 @@
  * Given two matrix A size na x m and B size nb x m, return a matrix C size
  * (na + nb) x m such as C[0 : na, 0 : m] = A and C[na : nb, 0 : m] = B.
  */
-spasm *spasm_row_concatenation(spasm * A, spasm * B, int with_values) {
+spasm *spasm_row_concatenation(spasm * A, spasm * B, int64_t with_values) {
 	spasm *C;
-	int px, i, na, nb, m, n, anz, bnz, nzmax, prime;
-	int *Ap, *Bp, *Cp, *Aj, *Bj, *Cj;
+	int64_t px, i, na, nb, m, n, anz, bnz, nzmax, prime;
+	int64_t *Ap, *Bp, *Cp, *Aj, *Bj, *Cj;
 	spasm_GFp *Ax, *Bx, *Cx;
 
 	/* Check inputs */
